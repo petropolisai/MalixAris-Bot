@@ -14,6 +14,7 @@ import logging
 import os
 import re
 import sqlite3
+import sys
 import tempfile
 import time
 import zipfile
@@ -793,20 +794,23 @@ class BackupService:
         ai_feature.BOT_NAME_PLAIN = name
         ai_feature.BOT_NAME = name
         ai_feature.BOT_CREATOR_NAME = creator
+        # When launched as `python main.py`, the live launcher is named
+        # `__main__`. Importing `main` here would execute the launcher a second
+        # time and rebuild/reparent its Discord command tree.
+        for module_name in ("__main__", "main"):
+            launcher = sys.modules.get(module_name)
+            if launcher is not None and getattr(launcher, "bot", None) is self.bot:
+                launcher.BOT_NAME = name
+                launcher.BOT_CREATOR_NAME = creator
+                break
         try:
-            import main
-            main.BOT_NAME = name
-            main.BOT_CREATOR_NAME = creator
-            main.ai_feature.BOT_NAME_PLAIN = name
-            main.ai_feature.BOT_NAME = name
-            main.ai_feature.BOT_CREATOR_NAME = creator
             await self.bot.change_presence(
                 activity=discord.Activity(
                     type=discord.ActivityType.watching,
                     name=f"{name} • /ai chat • /gtn • /vouch • /apply • /ticket panel • /backup",
                 )
             )
-        except (ImportError, discord.HTTPException):
+        except discord.HTTPException:
             logger.warning("Restored state, but could not refresh bot presence", exc_info=True)
         result["filename"] = attachment.filename
         result["source_message_id"] = message_id
