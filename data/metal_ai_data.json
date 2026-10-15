@@ -1,0 +1,19 @@
+{
+  "log_channel_id": null,
+  "premium_users": [],
+  "guild_personas": {},
+  "blacklisted_users": [],
+  "maintenance_mode": false,
+  "guild_daily_limits": {},
+  "active_model": "cohere/north-mini-code:free",
+  "active_vision_model": "cohere/north-mini-code:free",
+  "extra_bot_owners": [],
+  "guild_rules": {},
+  "user_modes": {},
+  "ai_auto_channels": {},
+  "guild_ping_policy": {},
+  "ping_protected_roles": {},
+  "ping_protected_users": {},
+  "daily_usage": {},
+  "usage_reset_date": "2026-10-15"
+}
